@@ -10,6 +10,8 @@ from .catalog.providers import CatalogProvider
 from .common.providers import ConfigProvider, DatabaseProvider
 from .identity.api import router as identity_router
 from .identity.providers import IdentityProvider
+from .scheduling.api import halls_router, sessions_router
+from .scheduling.providers import SchedulingProvider
 
 app = FastAPI(title="Cinema Booking API", version="0.1.0")
 
@@ -23,8 +25,12 @@ app.add_middleware(
 
 app.include_router(identity_router)
 app.include_router(catalog_router)
+app.include_router(halls_router)
+app.include_router(sessions_router)
 
-container = make_async_container(ConfigProvider(), DatabaseProvider(), IdentityProvider(), CatalogProvider())
+container = make_async_container(
+    ConfigProvider(), DatabaseProvider(), IdentityProvider(), CatalogProvider(), SchedulingProvider()
+)
 setup_dishka(container, app)
 
 
