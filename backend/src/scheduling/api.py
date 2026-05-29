@@ -1,7 +1,7 @@
-from dishka.integrations.fastapi import FromDI, inject
+from dishka.integrations.fastapi import FromDishka, inject
 from fastapi import APIRouter, Depends, status
 
-from src.common.dependencies import get_current_user, require_roles
+from src.common.dependencies import require_roles
 from src.identity.models import User
 
 from .scheme import (
@@ -33,7 +33,7 @@ sessions_router = APIRouter(prefix="/sessions", tags=["sessions"])
 @halls_router.get("", response_model=list[HallResponse])
 @inject
 async def get_halls(
-    use_case: FromDI[GetHallsUseCase] = ...,
+    use_case: FromDishka[GetHallsUseCase] = ...,
     _: User = Depends(require_roles("admin", "moderator")),
 ) -> list[HallResponse]:
     return await use_case.execute()
@@ -43,7 +43,7 @@ async def get_halls(
 @inject
 async def create_hall(
     data: CreateHallRequest,
-    use_case: FromDI[CreateHallUseCase] = ...,
+    use_case: FromDishka[CreateHallUseCase] = ...,
     _: User = Depends(require_roles("admin")),
 ) -> HallResponse:
     return await use_case.execute(data)
@@ -53,7 +53,7 @@ async def create_hall(
 @inject
 async def get_hall_seats(
     hall_id: int,
-    use_case: FromDI[GetHallSeatsUseCase] = ...,
+    use_case: FromDishka[GetHallSeatsUseCase] = ...,
     _: User = Depends(require_roles("admin", "moderator")),
 ) -> list[SeatResponse]:
     return await use_case.execute(hall_id)
@@ -65,7 +65,7 @@ async def update_seat(
     hall_id: int,
     seat_id: int,
     data: UpdateSeatRequest,
-    use_case: FromDI[UpdateSeatUseCase] = ...,
+    use_case: FromDishka[UpdateSeatUseCase] = ...,
     _: User = Depends(require_roles("admin")),
 ) -> SeatResponse:
     return await use_case.execute(seat_id, data)
@@ -75,7 +75,7 @@ async def update_seat(
 @inject
 async def get_sessions(
     movie_id: int | None = None,
-    use_case: FromDI[GetSessionsUseCase] = ...,
+    use_case: FromDishka[GetSessionsUseCase] = ...,
 ) -> list[SessionResponse]:
     return await use_case.execute(movie_id=movie_id)
 
@@ -84,7 +84,7 @@ async def get_sessions(
 @inject
 async def get_session(
     session_id: int,
-    use_case: FromDI[GetSessionDetailUseCase] = ...,
+    use_case: FromDishka[GetSessionDetailUseCase] = ...,
 ) -> SessionDetailResponse:
     return await use_case.execute(session_id)
 
@@ -93,7 +93,7 @@ async def get_session(
 @inject
 async def create_session(
     data: CreateSessionRequest,
-    use_case: FromDI[CreateSessionUseCase] = ...,
+    use_case: FromDishka[CreateSessionUseCase] = ...,
     _: User = Depends(require_roles("admin", "moderator")),
 ) -> SessionResponse:
     return await use_case.execute(data)
@@ -104,7 +104,7 @@ async def create_session(
 async def update_session(
     session_id: int,
     data: UpdateSessionRequest,
-    use_case: FromDI[UpdateSessionUseCase] = ...,
+    use_case: FromDishka[UpdateSessionUseCase] = ...,
     _: User = Depends(require_roles("admin", "moderator")),
 ) -> SessionResponse:
     return await use_case.execute(session_id, data)
@@ -114,7 +114,7 @@ async def update_session(
 @inject
 async def cancel_session(
     session_id: int,
-    use_case: FromDI[CancelSessionUseCase] = ...,
+    use_case: FromDishka[CancelSessionUseCase] = ...,
     _: User = Depends(require_roles("admin", "moderator")),
 ) -> None:
     await use_case.execute(session_id)

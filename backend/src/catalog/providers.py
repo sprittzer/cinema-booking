@@ -7,8 +7,8 @@ from .use_case import (
     CreateReviewUseCase,
     DeleteMovieUseCase,
     DeleteReviewUseCase,
-    GetMovieUseCase,
     GetMoviesUseCase,
+    GetMovieUseCase,
     GetReviewsUseCase,
     ImportTMDBUseCase,
     UpdateMovieUseCase,
@@ -55,7 +55,9 @@ class CatalogProvider(Provider):
         return GetReviewsUseCase(dao)
 
     @provide
-    def create_review_uc(self, movie_dao: MovieDAO, review_dao: MovieReviewDAO, session: AsyncSession) -> CreateReviewUseCase:
+    def create_review_uc(
+        self, movie_dao: MovieDAO, review_dao: MovieReviewDAO, session: AsyncSession
+    ) -> CreateReviewUseCase:
         return CreateReviewUseCase(movie_dao, review_dao, session)
 
     @provide

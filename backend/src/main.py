@@ -4,14 +4,14 @@ from dishka.integrations.fastapi import setup_dishka
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from .common.config import config
+from .booking.api import router as booking_router
+from .booking.providers import BookingProvider
 from .catalog.api import router as catalog_router
 from .catalog.providers import CatalogProvider
+from .common.config import config
 from .common.providers import ConfigProvider, DatabaseProvider
 from .identity.api import router as identity_router
 from .identity.providers import IdentityProvider
-from .booking.api import router as booking_router
-from .booking.providers import BookingProvider
 from .scheduling.api import halls_router, sessions_router
 from .scheduling.providers import SchedulingProvider
 

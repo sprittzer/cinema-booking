@@ -7,7 +7,7 @@ from src.common.base_model import BaseModel
 from src.common.db import Base
 
 
-class BookingStatus(str, enum.Enum):
+class BookingStatus(enum.StrEnum):
     PENDING = "pending"
     CONFIRMED = "confirmed"
     USED = "used"

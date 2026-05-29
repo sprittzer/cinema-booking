@@ -28,6 +28,7 @@ dev = [
     "pytest>=8.3.0",
     "pytest-asyncio>=0.25.0",
     "pytest-cov>=6.0.0",
+    "types-python-jose>=3.3.0",
 ]
 
 [build-system]
@@ -43,10 +44,15 @@ target-version = "py312"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "SIM"]
+ignore = ["B008"]
 
 [tool.mypy]
 python_version = "3.12"
 strict = true
+
+[[tool.mypy.overrides]]
+module = ["src.identity.api", "src.catalog.api", "src.scheduling.api", "src.booking.api"]
+disable_error_code = ["assignment"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"

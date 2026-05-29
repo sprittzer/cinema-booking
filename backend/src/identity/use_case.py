@@ -1,3 +1,5 @@
+from typing import Any
+
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -74,7 +76,7 @@ class GetHistoryUseCase(BaseUseCase):
     def __init__(self, session: AsyncSession) -> None:
         self._session = session
 
-    async def execute(self, user: User) -> list:
+    async def execute(self, user: User) -> list[Any]:
         from src.booking.models import Booking, BookingStatus
         from src.catalog.models import Movie
         from src.catalog.scheme import MovieResponse

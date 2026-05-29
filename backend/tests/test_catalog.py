@@ -82,7 +82,8 @@ class TestCreateReviewUseCase:
             await use_case.execute(1, user, CreateReviewRequest(score=5))
 
     async def test_duplicate_review_raises_error(self, mock_movie_dao, mock_review_dao, mock_session_db, user):
-        from src.catalog.models import Movie as MovieModel, MovieReview
+        from src.catalog.models import Movie as MovieModel
+        from src.catalog.models import MovieReview
         movie = MovieModel()
         movie.id = 1
         mock_movie_dao.get_by_id.return_value = movie

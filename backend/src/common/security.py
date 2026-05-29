@@ -1,4 +1,5 @@
 from datetime import UTC, datetime, timedelta
+from typing import Any
 
 import bcrypt
 from jose import jwt
@@ -20,5 +21,5 @@ def create_access_token(user_id: int, role: str) -> str:
     return jwt.encode(payload, config.secret_key, algorithm="HS256")
 
 
-def decode_token(token: str) -> dict:
+def decode_token(token: str) -> dict[str, Any]:
     return jwt.decode(token, config.secret_key, algorithms=["HS256"])

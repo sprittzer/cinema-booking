@@ -2,7 +2,14 @@ from dishka import Provider, Scope, provide
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from .dao import UserDAO
-from .use_case import DeleteUserUseCase, GetHistoryUseCase, GetUsersUseCase, LoginUseCase, RegisterUseCase, UpdateProfileUseCase
+from .use_case import (
+    DeleteUserUseCase,
+    GetHistoryUseCase,
+    GetUsersUseCase,
+    LoginUseCase,
+    RegisterUseCase,
+    UpdateProfileUseCase,
+)
 
 
 class IdentityProvider(Provider):

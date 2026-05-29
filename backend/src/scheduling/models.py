@@ -1,4 +1,5 @@
 import enum
+from datetime import datetime
 
 from sqlalchemy import DateTime, Enum, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column
@@ -6,7 +7,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 from src.common.base_model import BaseModel
 
 
-class SeatType(str, enum.Enum):
+class SeatType(enum.StrEnum):
     STANDARD = "standard"
     VIP = "vip"
     COUPLE = "couple"
@@ -19,19 +20,19 @@ SEAT_TYPE_MULTIPLIER = {
 }
 
 
-class SessionFormat(str, enum.Enum):
+class SessionFormat(enum.StrEnum):
     TWO_D = "2d"
     THREE_D = "3d"
     IMAX = "imax"
 
 
-class SessionLanguage(str, enum.Enum):
+class SessionLanguage(enum.StrEnum):
     RU = "ru"
     EN = "en"
     EN_SUB = "en_sub"
 
 
-class SessionStatus(str, enum.Enum):
+class SessionStatus(enum.StrEnum):
     SCHEDULED = "scheduled"
     ONGOING = "ongoing"
     COMPLETED = "completed"
@@ -61,7 +62,7 @@ class CinemaSession(BaseModel):
 
     movie_id: Mapped[int] = mapped_column(ForeignKey("movies.id", ondelete="CASCADE"))
     hall_id: Mapped[int] = mapped_column(ForeignKey("halls.id", ondelete="CASCADE"))
-    start_time: Mapped[str] = mapped_column(DateTime(timezone=True))
+    start_time: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     format: Mapped[SessionFormat] = mapped_column(Enum(SessionFormat), default=SessionFormat.TWO_D)
     language: Mapped[SessionLanguage] = mapped_column(Enum(SessionLanguage), default=SessionLanguage.RU)
     base_price: Mapped[float] = mapped_column(Float)

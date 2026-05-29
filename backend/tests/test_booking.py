@@ -6,7 +6,7 @@ from src.booking.models import Booking, BookingStatus
 from src.booking.scheme import CreateBookingRequest, ScanTicketRequest
 from src.booking.use_case import CancelBookingUseCase, CreateBookingUseCase, ScanTicketUseCase
 from src.common.exceptions import ForbiddenError, NotFoundError
-from src.scheduling.models import Seat, SeatType, SessionStatus
+from src.scheduling.models import Seat, SeatType
 
 
 class TestCreateBookingUseCase:

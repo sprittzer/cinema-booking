@@ -1,3 +1,5 @@
+from typing import Any
+
 import httpx
 
 from src.common.config import config
@@ -15,14 +17,14 @@ TMDB_GENRE_MAP = {
 }
 
 
-async def fetch_movie(tmdb_id: int) -> dict:
+async def fetch_movie(tmdb_id: int) -> dict[str, Any]:
     async with httpx.AsyncClient() as client:
         response = await client.get(
             f"{config.tmdb_base_url}/movie/{tmdb_id}",
             params={"api_key": config.tmdb_api_key, "language": "ru-RU"},
         )
         response.raise_for_status()
-        return response.json()
+        return response.json()  # type: ignore[no-any-return]
 
 
 async def fetch_trailer_url(tmdb_id: int) -> str | None:

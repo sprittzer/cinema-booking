@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.common.base_use_case import BaseUseCase
 from src.common.exceptions import ForbiddenError, NotFoundError
 from src.identity.models import User
-from src.scheduling.models import CinemaSession, Seat, SEAT_TYPE_MULTIPLIER, SessionStatus
+from src.scheduling.models import SEAT_TYPE_MULTIPLIER, CinemaSession, Seat, SessionStatus
 
 from .dao import BookingDAO
 from .email_service import send_booking_confirmation

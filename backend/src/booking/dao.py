@@ -3,13 +3,13 @@ import uuid
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.common.base_dao import BaseDAO
-from src.scheduling.models import CinemaSession, Hall, Seat, SEAT_TYPE_MULTIPLIER
-from src.identity.models import User
 from src.catalog.models import Movie
+from src.common.base_dao import BaseDAO
+from src.identity.models import User
+from src.scheduling.models import SEAT_TYPE_MULTIPLIER, CinemaSession, Hall, Seat
 
 from .models import Booking, BookingSeat, BookingStatus
-from .scheme import BookingDetailResponse, BookingResponse, ScanTicketResponse, SeatInfo
+from .scheme import BookingDetailResponse, ScanTicketResponse, SeatInfo
 
 
 class BookingDAO(BaseDAO):
