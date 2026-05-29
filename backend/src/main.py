@@ -5,6 +5,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from .common.config import config
+from .catalog.api import router as catalog_router
+from .catalog.providers import CatalogProvider
 from .common.providers import ConfigProvider, DatabaseProvider
 from .identity.api import router as identity_router
 from .identity.providers import IdentityProvider
@@ -20,8 +22,9 @@ app.add_middleware(
 )
 
 app.include_router(identity_router)
+app.include_router(catalog_router)
 
-container = make_async_container(ConfigProvider(), DatabaseProvider(), IdentityProvider())
+container = make_async_container(ConfigProvider(), DatabaseProvider(), IdentityProvider(), CatalogProvider())
 setup_dishka(container, app)
 
 
