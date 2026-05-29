@@ -2,7 +2,7 @@ from datetime import datetime
 
 from pydantic import BaseModel, ConfigDict
 
-from .models import SEAT_TYPE_MULTIPLIER, SeatType, SessionFormat, SessionLanguage, SessionStatus
+from .models import SeatType, SessionFormat, SessionLanguage, SessionStatus
 
 
 class HallResponse(BaseModel):

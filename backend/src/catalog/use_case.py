@@ -1,4 +1,3 @@
-from fastapi import HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -7,7 +6,7 @@ from src.common.exceptions import AlreadyExistsError, ForbiddenError, NotFoundEr
 from src.identity.models import User
 
 from .dao import MovieDAO, MovieReviewDAO
-from .models import Movie, MovieReview
+from .models import Movie, MovieReview, MovieStatus
 from .scheme import (
     CreateMovieRequest,
     CreateReviewRequest,
@@ -29,7 +28,8 @@ class GetMoviesUseCase(BaseUseCase):
         status: str | None = None,
         featured: bool | None = None,
     ) -> list[MovieResponse]:
-        movies = await self._dao.get_all(genre=genre, status=status, featured=featured)
+        status_enum = MovieStatus(status) if status else None
+        movies = await self._dao.get_all(genre=genre, status=status_enum, featured=featured)
         return [MovieResponse.model_validate(m) for m in movies]
 
 
@@ -136,7 +136,9 @@ class CreateReviewUseCase(BaseUseCase):
         from src.scheduling.models import CinemaSession
 
         watched = await self._session.execute(
-            select(Booking).join(CinemaSession).where(
+            select(Booking)
+            .join(CinemaSession)
+            .where(
                 Booking.user_id == user.id,
                 Booking.status == BookingStatus.USED,
                 CinemaSession.movie_id == movie_id,

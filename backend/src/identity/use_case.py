@@ -1,3 +1,8 @@
+from typing import Any
+
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from src.common.base_use_case import BaseUseCase
 from src.common.exceptions import AlreadyExistsError, NotFoundError, UnauthorizedError
 from src.common.security import create_access_token, hash_password, verify_password
@@ -65,3 +70,28 @@ class DeleteUserUseCase(BaseUseCase):
         if not user:
             raise NotFoundError("Пользователь не найден")
         await self._dao.delete(user)
+
+
+class GetHistoryUseCase(BaseUseCase):
+    def __init__(self, session: AsyncSession) -> None:
+        self._session = session
+
+    async def execute(self, user: User) -> list[Any]:
+        from src.booking.models import Booking, BookingStatus
+        from src.catalog.models import Movie
+        from src.catalog.scheme import MovieResponse
+        from src.scheduling.models import CinemaSession
+
+        result = await self._session.execute(
+            select(Movie)
+            .join(CinemaSession, CinemaSession.movie_id == Movie.id)
+            .join(Booking, Booking.session_id == CinemaSession.id)
+            .where(
+                Booking.user_id == user.id,
+                Booking.status == BookingStatus.USED,
+            )
+            .distinct()
+            .order_by(Booking.updated_at.desc())
+        )
+        movies = result.scalars().all()
+        return [MovieResponse.model_validate(m) for m in movies]

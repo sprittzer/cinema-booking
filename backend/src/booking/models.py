@@ -7,7 +7,7 @@ from src.common.base_model import BaseModel
 from src.common.db import Base
 
 
-class BookingStatus(str, enum.Enum):
+class BookingStatus(enum.StrEnum):
     PENDING = "pending"
     CONFIRMED = "confirmed"
     USED = "used"
@@ -27,9 +27,5 @@ class Booking(BaseModel):
 class BookingSeat(Base):
     __tablename__ = "booking_seats"
 
-    booking_id: Mapped[int] = mapped_column(
-        ForeignKey("bookings.id", ondelete="CASCADE"), primary_key=True
-    )
-    seat_id: Mapped[int] = mapped_column(
-        ForeignKey("seats.id", ondelete="CASCADE"), primary_key=True
-    )
+    booking_id: Mapped[int] = mapped_column(ForeignKey("bookings.id", ondelete="CASCADE"), primary_key=True)
+    seat_id: Mapped[int] = mapped_column(ForeignKey("seats.id", ondelete="CASCADE"), primary_key=True)

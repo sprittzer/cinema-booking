@@ -1,4 +1,4 @@
-from dishka.integrations.fastapi import FromDI, inject
+from dishka.integrations.fastapi import FromDishka, inject
 from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
 
@@ -30,7 +30,7 @@ router = APIRouter(tags=["bookings"])
 @router.get("/bookings/me", response_model=list[BookingDetailResponse])
 @inject
 async def get_my_bookings(
-    use_case: FromDI[GetMyBookingsUseCase] = ...,
+    use_case: FromDishka[GetMyBookingsUseCase] = ...,
     current_user: User = Depends(get_current_user),
 ) -> list[BookingDetailResponse]:
     return await use_case.execute(current_user)
@@ -40,7 +40,7 @@ async def get_my_bookings(
 @inject
 async def create_booking(
     data: CreateBookingRequest,
-    use_case: FromDI[CreateBookingUseCase] = ...,
+    use_case: FromDishka[CreateBookingUseCase] = ...,
     current_user: User = Depends(get_current_user),
 ) -> BookingResponse:
     return await use_case.execute(current_user, data)
@@ -50,7 +50,7 @@ async def create_booking(
 @inject
 async def pay_booking(
     booking_id: int,
-    use_case: FromDI[PayBookingUseCase] = ...,
+    use_case: FromDishka[PayBookingUseCase] = ...,
     current_user: User = Depends(get_current_user),
 ) -> PayBookingResponse:
     return await use_case.execute(booking_id, current_user)
@@ -60,7 +60,7 @@ async def pay_booking(
 @inject
 async def get_qr(
     booking_id: int,
-    use_case: FromDI[GetQRUseCase] = ...,
+    use_case: FromDishka[GetQRUseCase] = ...,
     current_user: User = Depends(get_current_user),
 ) -> JSONResponse:
     qr_base64 = await use_case.execute(booking_id, current_user)
@@ -71,7 +71,7 @@ async def get_qr(
 @inject
 async def cancel_booking(
     booking_id: int,
-    use_case: FromDI[CancelBookingUseCase] = ...,
+    use_case: FromDishka[CancelBookingUseCase] = ...,
     current_user: User = Depends(get_current_user),
 ) -> None:
     await use_case.execute(booking_id, current_user)
@@ -80,7 +80,7 @@ async def cancel_booking(
 @router.get("/bookings", response_model=list[BookingResponse])
 @inject
 async def get_all_bookings(
-    use_case: FromDI[GetAllBookingsUseCase] = ...,
+    use_case: FromDishka[GetAllBookingsUseCase] = ...,
     _: User = Depends(require_roles("admin")),
 ) -> list[BookingResponse]:
     return await use_case.execute()
@@ -90,7 +90,7 @@ async def get_all_bookings(
 @inject
 async def get_session_bookings(
     session_id: int,
-    use_case: FromDI[GetSessionBookingsUseCase] = ...,
+    use_case: FromDishka[GetSessionBookingsUseCase] = ...,
     _: User = Depends(require_roles("admin", "moderator")),
 ) -> list[BookingDetailResponse]:
     return await use_case.execute(session_id)
@@ -100,7 +100,7 @@ async def get_session_bookings(
 @inject
 async def scan_ticket(
     data: ScanTicketRequest,
-    use_case: FromDI[ScanTicketUseCase] = ...,
+    use_case: FromDishka[ScanTicketUseCase] = ...,
     _: User = Depends(require_roles("admin", "moderator")),
 ) -> ScanTicketResponse:
     return await use_case.execute(data)

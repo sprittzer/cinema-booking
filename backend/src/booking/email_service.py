@@ -27,9 +27,11 @@ async def send_booking_confirmation(
     <p>Покажите QR-код на входе в зал.</p>
     """
 
-    resend.Emails.send({
-        "from": config.email_from,
-        "to": to_email,
-        "subject": f"Билет на «{movie_title}»",
-        "html": html,
-    })
+    resend.Emails.send(
+        {
+            "from": config.email_from,
+            "to": to_email,
+            "subject": f"Билет на «{movie_title}»",
+            "html": html,
+        }
+    )

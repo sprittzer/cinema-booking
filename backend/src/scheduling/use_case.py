@@ -2,7 +2,7 @@ from src.common.base_use_case import BaseUseCase
 from src.common.exceptions import NotFoundError
 
 from .dao import HallDAO, SeatDAO, SessionDAO
-from .models import CinemaSession, Hall, Seat, SEAT_TYPE_MULTIPLIER
+from .models import SEAT_TYPE_MULTIPLIER, CinemaSession, Hall, Seat
 from .scheme import (
     CreateHallRequest,
     CreateSessionRequest,

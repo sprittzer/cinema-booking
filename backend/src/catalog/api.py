@@ -1,4 +1,4 @@
-from dishka.integrations.fastapi import FromDI, inject
+from dishka.integrations.fastapi import FromDishka, inject
 from fastapi import APIRouter, Depends, status
 
 from src.common.dependencies import get_current_user, require_roles
@@ -18,8 +18,8 @@ from .use_case import (
     CreateReviewUseCase,
     DeleteMovieUseCase,
     DeleteReviewUseCase,
-    GetMovieUseCase,
     GetMoviesUseCase,
+    GetMovieUseCase,
     GetReviewsUseCase,
     ImportTMDBUseCase,
     UpdateMovieUseCase,
@@ -34,7 +34,7 @@ async def get_movies(
     genre: Genre | None = None,
     status: MovieStatus | None = None,
     featured: bool | None = None,
-    use_case: FromDI[GetMoviesUseCase] = ...,
+    use_case: FromDishka[GetMoviesUseCase] = ...,
 ) -> list[MovieResponse]:
     return await use_case.execute(genre=genre, status=status, featured=featured)
 
@@ -43,7 +43,7 @@ async def get_movies(
 @inject
 async def get_movie(
     movie_id: int,
-    use_case: FromDI[GetMovieUseCase] = ...,
+    use_case: FromDishka[GetMovieUseCase] = ...,
 ) -> MovieResponse:
     return await use_case.execute(movie_id)
 
@@ -52,7 +52,7 @@ async def get_movie(
 @inject
 async def create_movie(
     data: CreateMovieRequest,
-    use_case: FromDI[CreateMovieUseCase] = ...,
+    use_case: FromDishka[CreateMovieUseCase] = ...,
     _: User = Depends(require_roles("admin")),
 ) -> MovieResponse:
     return await use_case.execute(data)
@@ -63,7 +63,7 @@ async def create_movie(
 async def update_movie(
     movie_id: int,
     data: UpdateMovieRequest,
-    use_case: FromDI[UpdateMovieUseCase] = ...,
+    use_case: FromDishka[UpdateMovieUseCase] = ...,
     _: User = Depends(require_roles("admin")),
 ) -> MovieResponse:
     return await use_case.execute(movie_id, data)
@@ -73,7 +73,7 @@ async def update_movie(
 @inject
 async def delete_movie(
     movie_id: int,
-    use_case: FromDI[DeleteMovieUseCase] = ...,
+    use_case: FromDishka[DeleteMovieUseCase] = ...,
     _: User = Depends(require_roles("admin")),
 ) -> None:
     await use_case.execute(movie_id)
@@ -83,7 +83,7 @@ async def delete_movie(
 @inject
 async def import_from_tmdb(
     data: ImportTMDBRequest,
-    use_case: FromDI[ImportTMDBUseCase] = ...,
+    use_case: FromDishka[ImportTMDBUseCase] = ...,
     _: User = Depends(require_roles("admin")),
 ) -> MovieResponse:
     return await use_case.execute(data)
@@ -93,7 +93,7 @@ async def import_from_tmdb(
 @inject
 async def get_reviews(
     movie_id: int,
-    use_case: FromDI[GetReviewsUseCase] = ...,
+    use_case: FromDishka[GetReviewsUseCase] = ...,
 ) -> list[ReviewResponse]:
     return await use_case.execute(movie_id)
 
@@ -103,7 +103,7 @@ async def get_reviews(
 async def create_review(
     movie_id: int,
     data: CreateReviewRequest,
-    use_case: FromDI[CreateReviewUseCase] = ...,
+    use_case: FromDishka[CreateReviewUseCase] = ...,
     current_user: User = Depends(get_current_user),
 ) -> ReviewResponse:
     return await use_case.execute(movie_id, current_user, data)
@@ -114,7 +114,7 @@ async def create_review(
 async def delete_review(
     movie_id: int,
     review_id: int,
-    use_case: FromDI[DeleteReviewUseCase] = ...,
+    use_case: FromDishka[DeleteReviewUseCase] = ...,
     current_user: User = Depends(get_current_user),
 ) -> None:
     await use_case.execute(review_id, current_user)

@@ -18,4 +18,4 @@ class Config(BaseSettings):
     email_from: str = "noreply@cinema-booking.ru"
 
 
-config = Config()
+config = Config()  # type: ignore[call-arg]

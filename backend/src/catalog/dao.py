@@ -50,13 +50,9 @@ class MovieDAO(BaseDAO):
         await self._session.commit()
 
     async def recalculate_avg_rating(self, movie_id: int) -> None:
-        avg = await self._session.execute(
-            select(func.avg(MovieReview.score)).where(MovieReview.movie_id == movie_id)
-        )
+        avg = await self._session.execute(select(func.avg(MovieReview.score)).where(MovieReview.movie_id == movie_id))
         new_avg = avg.scalar()
-        await self._session.execute(
-            update(Movie).where(Movie.id == movie_id).values(avg_rating=new_avg)
-        )
+        await self._session.execute(update(Movie).where(Movie.id == movie_id).values(avg_rating=new_avg))
         await self._session.commit()
 
 

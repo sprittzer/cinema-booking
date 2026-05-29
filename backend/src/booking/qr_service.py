@@ -1,7 +1,7 @@
 import base64
 import io
 
-import qrcode
+import qrcode  # type: ignore[import-untyped]
 
 
 def generate_qr_base64(ticket_code: str) -> str:

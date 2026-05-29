@@ -6,7 +6,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 from src.common.base_model import BaseModel
 
 
-class Role(str, enum.Enum):
+class Role(enum.StrEnum):
     USER = "user"
     MODERATOR = "moderator"
     ADMIN = "admin"

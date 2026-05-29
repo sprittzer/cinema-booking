@@ -6,7 +6,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 from src.common.base_model import BaseModel
 
 
-class Genre(str, enum.Enum):
+class Genre(enum.StrEnum):
     ACTION = "action"
     DRAMA = "drama"
     COMEDY = "comedy"
@@ -19,7 +19,7 @@ class Genre(str, enum.Enum):
     OTHER = "other"
 
 
-class AgeRating(str, enum.Enum):
+class AgeRating(enum.StrEnum):
     G = "0+"
     PG6 = "6+"
     PG12 = "12+"
@@ -27,7 +27,7 @@ class AgeRating(str, enum.Enum):
     R = "18+"
 
 
-class MovieStatus(str, enum.Enum):
+class MovieStatus(enum.StrEnum):
     NOW_PLAYING = "now_playing"
     COMING_SOON = "coming_soon"
     ARCHIVED = "archived"
