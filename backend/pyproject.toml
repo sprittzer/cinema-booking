@@ -1,47 +1,51 @@
-[tool.poetry]
+[project]
 name = "cinema-booking"
 version = "0.1.0"
 description = "Cinema ticket booking system"
-authors = ["sprittzer <sprittzer13@gmail.com>"]
-packages = [{ include = "src" }]
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.34.0",
+    "sqlalchemy[asyncio]>=2.0.0",
+    "alembic>=1.14.0",
+    "pydantic>=2.11.0",
+    "pydantic-settings>=2.9.0",
+    "dishka>=1.6.0",
+    "asyncpg>=0.30.0",
+    "python-jose[cryptography]>=3.3.0",
+    "bcrypt>=4.0.0",
+    "python-multipart>=0.0.20",
+    "email-validator>=2.2.0",
+    "qrcode[pil]>=8.0.0",
+    "resend>=2.0.0",
+    "httpx>=0.28.0",
+]
 
-[tool.poetry.dependencies]
-python = "^3.12"
-fastapi = "^0.115.0"
-uvicorn = { extras = ["standard"], version = "^0.34.0" }
-sqlalchemy = { extras = ["asyncio"], version = "^2.0.0" }
-alembic = "^1.14.0"
-pydantic = "^2.11.0"
-pydantic-settings = "^2.9.0"
-dishka = "^1.6.0"
-asyncpg = "^0.30.0"
-python-jose = { extras = ["cryptography"], version = "^3.3.0" }
-passlib = { extras = ["bcrypt"], version = "^1.7.0" }
-python-multipart = "^0.0.20"
-email-validator = "^2.2.0"
-qrcode = { extras = ["pil"], version = "^8.0.0" }
-resend = "^2.0.0"
-httpx = "^0.28.0"
-
-[tool.poetry.group.dev.dependencies]
-ruff = "^0.15.0"
-mypy = "^1.15.0"
-pytest = "^8.3.0"
-pytest-asyncio = "^0.25.0"
+[dependency-groups]
+dev = [
+    "ruff>=0.15.0",
+    "mypy>=1.15.0",
+    "pytest>=8.3.0",
+    "pytest-asyncio>=0.25.0",
+    "pytest-cov>=6.0.0",
+]
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src"]
 
 [tool.ruff]
 line-length = 120
-target-version = "py313"
+target-version = "py312"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "SIM"]
 
 [tool.mypy]
-python_version = "3.13"
+python_version = "3.12"
 strict = true
 
 [tool.pytest.ini_options]
