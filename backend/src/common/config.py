@@ -11,5 +11,11 @@ class Config(BaseSettings):
     port: int = 8000
     access_token_expire_minutes: int = 30
 
+    tmdb_api_key: str
+    tmdb_base_url: str = "https://api.themoviedb.org/3"
+
+    resend_api_key: str
+    email_from: str = "noreply@cinema-booking.ru"
+
 
 config = Config()
