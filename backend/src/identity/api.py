@@ -5,7 +5,7 @@ from src.common.dependencies import get_current_user, require_roles
 
 from .models import User
 from .scheme import LoginRequest, RegisterRequest, TokenResponse, UpdateProfileRequest, UserResponse
-from .use_case import DeleteUserUseCase, GetUsersUseCase, LoginUseCase, RegisterUseCase, UpdateProfileUseCase
+from .use_case import DeleteUserUseCase, GetHistoryUseCase, GetUsersUseCase, LoginUseCase, RegisterUseCase, UpdateProfileUseCase
 
 router = APIRouter()
 
@@ -60,3 +60,12 @@ async def delete_user(
     _: User = Depends(require_roles("admin")),
 ) -> None:
     await use_case.execute(user_id)
+
+
+@router.get("/users/me/history")
+@inject
+async def get_history(
+    use_case: FromDI[GetHistoryUseCase],
+    current_user: User = Depends(get_current_user),
+) -> list:
+    return await use_case.execute(current_user)

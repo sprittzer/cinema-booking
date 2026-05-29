@@ -9,6 +9,11 @@ from alembic import context
 from src.common.config import config as app_config
 from src.common.db import Base
 
+import src.identity.models  # noqa: F401
+import src.catalog.models  # noqa: F401
+import src.scheduling.models  # noqa: F401
+import src.booking.models  # noqa: F401
+
 alembic_config = context.config
 alembic_config.set_main_option("sqlalchemy.url", app_config.database_url)
 
