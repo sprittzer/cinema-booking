@@ -55,9 +55,7 @@ class TestCreateMovieUseCase:
         mock_movie_dao.create.return_value = created
 
         use_case = CreateMovieUseCase(mock_movie_dao)
-        result = await use_case.execute(
-            CreateMovieRequest(title="Dune", duration_minutes=155)
-        )
+        result = await use_case.execute(CreateMovieRequest(title="Dune", duration_minutes=155))
 
         assert result.title == "Dune"
         mock_movie_dao.create.assert_called_once()
@@ -68,6 +66,7 @@ class TestCreateReviewUseCase:
         from unittest.mock import AsyncMock, MagicMock
 
         from src.catalog.models import Movie as MovieModel
+
         movie = MovieModel()
         movie.id = 1
         mock_movie_dao.get_by_id.return_value = movie
@@ -84,6 +83,7 @@ class TestCreateReviewUseCase:
     async def test_duplicate_review_raises_error(self, mock_movie_dao, mock_review_dao, mock_session_db, user):
         from src.catalog.models import Movie as MovieModel
         from src.catalog.models import MovieReview
+
         movie = MovieModel()
         movie.id = 1
         mock_movie_dao.get_by_id.return_value = movie

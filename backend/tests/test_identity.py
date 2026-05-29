@@ -16,9 +16,7 @@ class TestRegisterUseCase:
         mock_user_dao.create.return_value = created_user
 
         use_case = RegisterUseCase(mock_user_dao)
-        result = await use_case.execute(
-            RegisterRequest(email="test@example.com", password="password123", name="Test")
-        )
+        result = await use_case.execute(RegisterRequest(email="test@example.com", password="password123", name="Test"))
 
         assert result.access_token
         assert result.token_type == "bearer"
@@ -29,9 +27,7 @@ class TestRegisterUseCase:
 
         use_case = RegisterUseCase(mock_user_dao)
         with pytest.raises(AlreadyExistsError):
-            await use_case.execute(
-                RegisterRequest(email="test@example.com", password="password123", name="Test")
-            )
+            await use_case.execute(RegisterRequest(email="test@example.com", password="password123", name="Test"))
 
 
 class TestLoginUseCase:
@@ -40,9 +36,7 @@ class TestLoginUseCase:
         mock_user_dao.get_by_email.return_value = user
 
         use_case = LoginUseCase(mock_user_dao)
-        result = await use_case.execute(
-            LoginRequest(email="test@example.com", password="password123")
-        )
+        result = await use_case.execute(LoginRequest(email="test@example.com", password="password123"))
 
         assert result.access_token
 
@@ -52,15 +46,11 @@ class TestLoginUseCase:
 
         use_case = LoginUseCase(mock_user_dao)
         with pytest.raises(UnauthorizedError):
-            await use_case.execute(
-                LoginRequest(email="test@example.com", password="wrong_password")
-            )
+            await use_case.execute(LoginRequest(email="test@example.com", password="wrong_password"))
 
     async def test_login_user_not_found(self, mock_user_dao):
         mock_user_dao.get_by_email.return_value = None
 
         use_case = LoginUseCase(mock_user_dao)
         with pytest.raises(UnauthorizedError):
-            await use_case.execute(
-                LoginRequest(email="nobody@example.com", password="password")
-            )
+            await use_case.execute(LoginRequest(email="nobody@example.com", password="password"))

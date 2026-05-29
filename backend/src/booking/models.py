@@ -27,9 +27,5 @@ class Booking(BaseModel):
 class BookingSeat(Base):
     __tablename__ = "booking_seats"
 
-    booking_id: Mapped[int] = mapped_column(
-        ForeignKey("bookings.id", ondelete="CASCADE"), primary_key=True
-    )
-    seat_id: Mapped[int] = mapped_column(
-        ForeignKey("seats.id", ondelete="CASCADE"), primary_key=True
-    )
+    booking_id: Mapped[int] = mapped_column(ForeignKey("bookings.id", ondelete="CASCADE"), primary_key=True)
+    seat_id: Mapped[int] = mapped_column(ForeignKey("seats.id", ondelete="CASCADE"), primary_key=True)

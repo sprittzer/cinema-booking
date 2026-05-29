@@ -49,6 +49,7 @@ class TestCreateBookingUseCase:
 
     async def test_session_not_found(self, mock_booking_dao, mock_session_db, user):
         from unittest.mock import MagicMock
+
         execute_result = MagicMock()
         execute_result.scalar_one_or_none.return_value = None
         mock_session_db.execute = AsyncMock(return_value=execute_result)

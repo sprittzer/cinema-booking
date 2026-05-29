@@ -32,9 +32,12 @@ app.include_router(sessions_router)
 app.include_router(booking_router)
 
 container = make_async_container(
-    ConfigProvider(), DatabaseProvider(),
-    IdentityProvider(), CatalogProvider(),
-    SchedulingProvider(), BookingProvider(),
+    ConfigProvider(),
+    DatabaseProvider(),
+    IdentityProvider(),
+    CatalogProvider(),
+    SchedulingProvider(),
+    BookingProvider(),
 )
 setup_dishka(container, app)
 

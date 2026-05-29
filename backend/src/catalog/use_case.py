@@ -136,7 +136,9 @@ class CreateReviewUseCase(BaseUseCase):
         from src.scheduling.models import CinemaSession
 
         watched = await self._session.execute(
-            select(Booking).join(CinemaSession).where(
+            select(Booking)
+            .join(CinemaSession)
+            .where(
                 Booking.user_id == user.id,
                 Booking.status == BookingStatus.USED,
                 CinemaSession.movie_id == movie_id,

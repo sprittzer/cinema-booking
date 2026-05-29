@@ -41,9 +41,7 @@ class BookingDAO(BaseDAO):
         return list(result.scalars().all())
 
     async def get_seat_ids(self, booking_id: int) -> list[int]:
-        result = await self._session.execute(
-            select(BookingSeat.seat_id).where(BookingSeat.booking_id == booking_id)
-        )
+        result = await self._session.execute(select(BookingSeat.seat_id).where(BookingSeat.booking_id == booking_id))
         return list(result.scalars().all())
 
     async def check_seats_available(self, session_id: int, seat_ids: list[int]) -> list[int]:
@@ -82,17 +80,13 @@ class BookingDAO(BaseDAO):
         return booking
 
     async def build_detail(self, booking: Booking) -> BookingDetailResponse:
-        cinema_session = (await self._session.execute(
-            select(CinemaSession).where(CinemaSession.id == booking.session_id)
-        )).scalar_one()
+        cinema_session = (
+            await self._session.execute(select(CinemaSession).where(CinemaSession.id == booking.session_id))
+        ).scalar_one()
 
-        hall = (await self._session.execute(
-            select(Hall).where(Hall.id == cinema_session.hall_id)
-        )).scalar_one()
+        hall = (await self._session.execute(select(Hall).where(Hall.id == cinema_session.hall_id))).scalar_one()
 
-        movie = (await self._session.execute(
-            select(Movie).where(Movie.id == cinema_session.movie_id)
-        )).scalar_one()
+        movie = (await self._session.execute(select(Movie).where(Movie.id == cinema_session.movie_id))).scalar_one()
 
         seat_ids = await self.get_seat_ids(booking.id)
         seats_result = await self._session.execute(select(Seat).where(Seat.id.in_(seat_ids)))
@@ -124,9 +118,7 @@ class BookingDAO(BaseDAO):
 
     async def build_scan_response(self, booking: Booking) -> ScanTicketResponse:
         detail = await self.build_detail(booking)
-        user = (await self._session.execute(
-            select(User).where(User.id == booking.user_id)
-        )).scalar_one()
+        user = (await self._session.execute(select(User).where(User.id == booking.user_id))).scalar_one()
 
         return ScanTicketResponse(
             booking_id=booking.id,

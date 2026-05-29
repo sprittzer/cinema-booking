@@ -28,9 +28,9 @@ class CreateBookingUseCase(BaseUseCase):
         self._session = session
 
     async def execute(self, user: User, data: CreateBookingRequest) -> BookingResponse:
-        cinema_session = (await self._session.execute(
-            select(CinemaSession).where(CinemaSession.id == data.session_id)
-        )).scalar_one_or_none()
+        cinema_session = (
+            await self._session.execute(select(CinemaSession).where(CinemaSession.id == data.session_id))
+        ).scalar_one_or_none()
 
         if not cinema_session:
             raise NotFoundError("Сеанс не найден")
@@ -53,10 +53,7 @@ class CreateBookingUseCase(BaseUseCase):
         if taken:
             raise ForbiddenError("Одно или несколько мест уже заняты")
 
-        total_price = sum(
-            round(cinema_session.base_price * SEAT_TYPE_MULTIPLIER[s.seat_type], 2)
-            for s in seats
-        )
+        total_price = sum(round(cinema_session.base_price * SEAT_TYPE_MULTIPLIER[s.seat_type], 2) for s in seats)
 
         booking = Booking(
             user_id=user.id,
@@ -165,9 +162,9 @@ class CancelBookingUseCase(BaseUseCase):
         if booking.status in (BookingStatus.USED, BookingStatus.CANCELLED):
             raise ForbiddenError("Нельзя отменить это бронирование")
 
-        cinema_session = (await self._session.execute(
-            select(CinemaSession).where(CinemaSession.id == booking.session_id)
-        )).scalar_one()
+        cinema_session = (
+            await self._session.execute(select(CinemaSession).where(CinemaSession.id == booking.session_id))
+        ).scalar_one()
 
         if datetime.now(UTC) >= cinema_session.start_time.replace(tzinfo=UTC):
             raise ForbiddenError("Сеанс уже начался")
