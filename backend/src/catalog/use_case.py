@@ -133,7 +133,7 @@ class CreateReviewUseCase(BaseUseCase):
 
         # проверяем что пользователь смотрел фильм
         from src.booking.models import Booking, BookingStatus
-        from src.scheduling.models import Session as CinemaSession
+        from src.scheduling.models import CinemaSession
 
         watched = await self._session.execute(
             select(Booking).join(CinemaSession).where(

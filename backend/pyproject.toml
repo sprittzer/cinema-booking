@@ -6,7 +6,7 @@ authors = ["sprittzer <sprittzer13@gmail.com>"]
 packages = [{ include = "src" }]
 
 [tool.poetry.dependencies]
-python = "^3.13"
+python = "^3.12"
 fastapi = "^0.115.0"
 uvicorn = { extras = ["standard"], version = "^0.34.0" }
 sqlalchemy = { extras = ["asyncio"], version = "^2.0.0" }
