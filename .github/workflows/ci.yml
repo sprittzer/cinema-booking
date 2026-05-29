@@ -4,7 +4,7 @@ on:
   pull_request:
     branches: [develop, master]
   push:
-    branches: [develop]
+    branches: [develop, master]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -80,3 +80,29 @@ jobs:
           SECRET_KEY: test-secret-key
           TMDB_API_KEY: test-key
           RESEND_API_KEY: test-key
+
+  docker:
+    name: Сборка и публикация образа
+    runs-on: ubuntu-latest
+    needs: [lint, type-check, test]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Войти в GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Собрать и запушить образ
+        uses: docker/build-push-action@v6
+        with:
+          context: backend
+          push: true
+          tags: ghcr.io/${{ github.repository_owner }}/cinema-booking-backend:latest
