@@ -157,6 +157,11 @@ class CancelBookingUseCase(BaseUseCase):
         booking = await self._dao.get_by_id(booking_id)
         if not booking:
             raise NotFoundError("Бронирование не найдено")
+
+        if user.role.value == "admin":
+            await self._dao.delete(booking)
+            return
+
         if booking.user_id != user.id:
             raise ForbiddenError("Нет доступа")
         if booking.status in (BookingStatus.USED, BookingStatus.CANCELLED):

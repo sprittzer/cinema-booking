@@ -79,6 +79,10 @@ class BookingDAO(BaseDAO):
         await self._session.refresh(booking)
         return booking
 
+    async def delete(self, booking: Booking) -> None:
+        await self._session.delete(booking)
+        await self._session.commit()
+
     async def build_detail(self, booking: Booking) -> BookingDetailResponse:
         cinema_session = (
             await self._session.execute(select(CinemaSession).where(CinemaSession.id == booking.session_id))
