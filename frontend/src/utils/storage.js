@@ -46,6 +46,5 @@ export function hasRole(user, roles = []) {
 
 export function roleLabel(role) {
   if (role === "admin") return "администратор";
-  if (role === "moderator") return "модератор";
   return "пользователь";
 }
