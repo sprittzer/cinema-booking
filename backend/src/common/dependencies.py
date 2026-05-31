@@ -1,27 +1,42 @@
 from collections.abc import Callable
-from typing import TYPE_CHECKING, Annotated, Any
+from typing import Annotated, Any
 
-from dishka.integrations.fastapi import FromDishka
+from dishka.integrations.fastapi import FromDishka, inject
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from jose import JWTError
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from src.identity.models import User
 from .security import decode_token
 
-if TYPE_CHECKING:
-    from src.identity.models import User
-
 security = HTTPBearer()
+optional_security = HTTPBearer(auto_error=False)
 
 
+@inject
+async def get_optional_user(
+    credentials: Annotated[HTTPAuthorizationCredentials | None, Depends(optional_security)],
+    session: FromDishka[AsyncSession],
+) -> User | None:
+    if not credentials:
+        return None
+    try:
+        payload = decode_token(credentials.credentials)
+        user_id = int(payload["sub"])
+    except (JWTError, KeyError, ValueError):
+        return None
+    result = await session.execute(select(User).where(User.id == user_id))
+    user = result.scalar_one_or_none()
+    return user if (user and user.is_active) else None
+
+
+@inject
 async def get_current_user(
     credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],
     session: FromDishka[AsyncSession],
-) -> "User":
-    from src.identity.models import User
-
+) -> User:
     try:
         payload = decode_token(credentials.credentials)
         user_id = int(payload["sub"])

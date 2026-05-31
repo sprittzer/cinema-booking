@@ -91,7 +91,7 @@ async def get_all_bookings(
 async def get_session_bookings(
     session_id: int,
     use_case: FromDishka[GetSessionBookingsUseCase] = ...,
-    _: User = Depends(require_roles("admin", "moderator")),
+    _: User = Depends(require_roles("admin")),
 ) -> list[BookingDetailResponse]:
     return await use_case.execute(session_id)
 
@@ -101,6 +101,6 @@ async def get_session_bookings(
 async def scan_ticket(
     data: ScanTicketRequest,
     use_case: FromDishka[ScanTicketUseCase] = ...,
-    _: User = Depends(require_roles("admin", "moderator")),
+    _: User = Depends(require_roles("admin")),
 ) -> ScanTicketResponse:
     return await use_case.execute(data)

@@ -6,7 +6,9 @@ from .use_case import (
     CancelSessionUseCase,
     CreateHallUseCase,
     CreateSessionUseCase,
+    DeleteHallUseCase,
     GetHallSeatsUseCase,
+    GetHallUseCase,
     GetHallsUseCase,
     GetSessionDetailUseCase,
     GetSessionsUseCase,
@@ -35,6 +37,10 @@ class SchedulingProvider(Provider):
         return GetHallsUseCase(dao)
 
     @provide
+    def get_hall_uc(self, dao: HallDAO) -> GetHallUseCase:
+        return GetHallUseCase(dao)
+
+    @provide
     def create_hall_uc(self, hall_dao: HallDAO, seat_dao: SeatDAO) -> CreateHallUseCase:
         return CreateHallUseCase(hall_dao, seat_dao)
 
@@ -61,6 +67,10 @@ class SchedulingProvider(Provider):
     @provide
     def update_session_uc(self, dao: SessionDAO) -> UpdateSessionUseCase:
         return UpdateSessionUseCase(dao)
+
+    @provide
+    def delete_hall_uc(self, dao: HallDAO) -> DeleteHallUseCase:
+        return DeleteHallUseCase(dao)
 
     @provide
     def cancel_session_uc(self, dao: SessionDAO) -> CancelSessionUseCase:
