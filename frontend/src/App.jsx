@@ -6,7 +6,6 @@ import AfishaPage from "./pages/AfishaPage";
 import ProfilePage from "./pages/ProfilePage";
 import MoviePage from "./pages/MoviePage";
 import MovieBookingPage from "./pages/MovieBookingPage";
-import ModeratorPage from "./pages/ModeratorPage";
 import ScannerPage from "./pages/ScannerPage";
 import AdminApp from "./admin/AdminApp";
 import ThemeToggle from "./components/ThemeToggle";
@@ -52,8 +51,7 @@ export default function App() {
         <Route path="/movies/:movieId" element={<ProtectedRoute><MoviePage /></ProtectedRoute>} />
         <Route path="/movies/:movieId/booking" element={<ProtectedRoute><MovieBookingPage /></ProtectedRoute>} />
         <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
-
-        <Route path="/moderator" element={<ProtectedRoute roles={["admin"]}><ModeratorPage /></ProtectedRoute>} />
+        
         <Route path="/scanner" element={<ProtectedRoute roles={["admin"]}><ScannerPage /></ProtectedRoute>} />
         <Route path="/admin/*" element={<AdminApp />} />
 
