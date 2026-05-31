@@ -3,12 +3,15 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from .dao import UserDAO
 from .use_case import (
+    CreateAdminUserUseCase,
     DeleteUserUseCase,
     GetHistoryUseCase,
     GetUsersUseCase,
+    GetUserUseCase,
     LoginUseCase,
     RegisterUseCase,
     UpdateProfileUseCase,
+    UpdateUserUseCase,
 )
 
 
@@ -34,6 +37,18 @@ class IdentityProvider(Provider):
     @provide
     def get_update_profile_use_case(self, dao: UserDAO) -> UpdateProfileUseCase:
         return UpdateProfileUseCase(dao)
+
+    @provide
+    def get_user_use_case(self, dao: UserDAO) -> GetUserUseCase:
+        return GetUserUseCase(dao)
+
+    @provide
+    def create_admin_user_use_case(self, dao: UserDAO) -> CreateAdminUserUseCase:
+        return CreateAdminUserUseCase(dao)
+
+    @provide
+    def update_user_use_case(self, dao: UserDAO) -> UpdateUserUseCase:
+        return UpdateUserUseCase(dao)
 
     @provide
     def get_delete_user_use_case(self, dao: UserDAO) -> DeleteUserUseCase:

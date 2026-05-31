@@ -1,9 +1,10 @@
 import enum
 
-from sqlalchemy import Boolean, Enum, Float, ForeignKey, Integer, String, Text, UniqueConstraint
+from sqlalchemy import Boolean, Column, Enum, Float, ForeignKey, Integer, String, Table, Text, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column
 
 from src.common.base_model import BaseModel
+from src.common.db import Base
 
 
 class Genre(enum.StrEnum):
@@ -46,7 +47,9 @@ class Movie(BaseModel):
     status: Mapped[MovieStatus] = mapped_column(Enum(MovieStatus), default=MovieStatus.NOW_PLAYING)
     is_featured: Mapped[bool] = mapped_column(Boolean, default=False)
     tmdb_id: Mapped[int | None] = mapped_column(Integer, unique=True, nullable=True)
+    tmdb_rating: Mapped[float | None] = mapped_column(Float, nullable=True)
     avg_rating: Mapped[float | None] = mapped_column(Float, nullable=True)
+    release_year: Mapped[int | None] = mapped_column(Integer, nullable=True)
 
 
 class MovieReview(BaseModel):
@@ -57,3 +60,31 @@ class MovieReview(BaseModel):
     movie_id: Mapped[int] = mapped_column(ForeignKey("movies.id", ondelete="CASCADE"))
     score: Mapped[int] = mapped_column(Integer)
     text: Mapped[str | None] = mapped_column(Text, nullable=True)
+
+
+class ReviewLike(BaseModel):
+    __tablename__ = "review_likes"
+    __table_args__ = (UniqueConstraint("review_id", "user_id", name="uq_review_user_like"),)
+
+    review_id: Mapped[int] = mapped_column(ForeignKey("movie_reviews.id", ondelete="CASCADE"))
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"))
+    value: Mapped[int] = mapped_column(Integer)
+
+
+class Actor(BaseModel):
+    __tablename__ = "actors"
+
+    name: Mapped[str] = mapped_column(String(200))
+    photo_url: Mapped[str | None] = mapped_column(Text, nullable=True)
+    birth_year: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    bio: Mapped[str | None] = mapped_column(Text, nullable=True)
+    tmdb_id: Mapped[int | None] = mapped_column(Integer, unique=True, nullable=True)
+
+
+movie_actors = Table(
+    "movie_actors",
+    Base.metadata,
+    Column("movie_id", Integer, ForeignKey("movies.id", ondelete="CASCADE"), primary_key=True),
+    Column("actor_id", Integer, ForeignKey("actors.id", ondelete="CASCADE"), primary_key=True),
+    Column("character", String(200), nullable=True),
+)

@@ -25,6 +25,17 @@ class GetHallsUseCase(BaseUseCase):
         return [HallResponse.model_validate(h) for h in halls]
 
 
+class GetHallUseCase(BaseUseCase):
+    def __init__(self, dao: HallDAO) -> None:
+        self._dao = dao
+
+    async def execute(self, hall_id: int) -> HallResponse:
+        hall = await self._dao.get_by_id(hall_id)
+        if not hall:
+            raise NotFoundError("Зал не найден")
+        return HallResponse.model_validate(hall)
+
+
 class CreateHallUseCase(BaseUseCase):
     def __init__(self, hall_dao: HallDAO, seat_dao: SeatDAO) -> None:
         self._hall_dao = hall_dao
@@ -142,6 +153,17 @@ class UpdateSessionUseCase(BaseUseCase):
             setattr(cinema_session, field, value)
         cinema_session = await self._dao.update(cinema_session)
         return SessionResponse.model_validate(cinema_session)
+
+
+class DeleteHallUseCase(BaseUseCase):
+    def __init__(self, dao: HallDAO) -> None:
+        self._dao = dao
+
+    async def execute(self, hall_id: int) -> None:
+        hall = await self._dao.get_by_id(hall_id)
+        if not hall:
+            raise NotFoundError("Зал не найден")
+        await self._dao.delete(hall)
 
 
 class CancelSessionUseCase(BaseUseCase):

@@ -18,8 +18,10 @@ from .use_case import (
     CancelSessionUseCase,
     CreateHallUseCase,
     CreateSessionUseCase,
+    DeleteHallUseCase,
     GetHallSeatsUseCase,
     GetHallsUseCase,
+    GetHallUseCase,
     GetSessionDetailUseCase,
     GetSessionsUseCase,
     UpdateSeatUseCase,
@@ -34,7 +36,7 @@ sessions_router = APIRouter(prefix="/sessions", tags=["sessions"])
 @inject
 async def get_halls(
     use_case: FromDishka[GetHallsUseCase] = ...,
-    _: User = Depends(require_roles("admin", "moderator")),
+    _: User = Depends(require_roles("admin")),
 ) -> list[HallResponse]:
     return await use_case.execute()
 
@@ -49,12 +51,32 @@ async def create_hall(
     return await use_case.execute(data)
 
 
+@halls_router.get("/{hall_id}", response_model=HallResponse)
+@inject
+async def get_hall(
+    hall_id: int,
+    use_case: FromDishka[GetHallUseCase] = ...,
+    _: User = Depends(require_roles("admin")),
+) -> HallResponse:
+    return await use_case.execute(hall_id)
+
+
+@halls_router.delete("/{hall_id}", status_code=status.HTTP_204_NO_CONTENT)
+@inject
+async def delete_hall(
+    hall_id: int,
+    use_case: FromDishka[DeleteHallUseCase] = ...,
+    _: User = Depends(require_roles("admin")),
+) -> None:
+    await use_case.execute(hall_id)
+
+
 @halls_router.get("/{hall_id}/seats", response_model=list[SeatResponse])
 @inject
 async def get_hall_seats(
     hall_id: int,
     use_case: FromDishka[GetHallSeatsUseCase] = ...,
-    _: User = Depends(require_roles("admin", "moderator")),
+    _: User = Depends(require_roles("admin")),
 ) -> list[SeatResponse]:
     return await use_case.execute(hall_id)
 
@@ -94,7 +116,7 @@ async def get_session(
 async def create_session(
     data: CreateSessionRequest,
     use_case: FromDishka[CreateSessionUseCase] = ...,
-    _: User = Depends(require_roles("admin", "moderator")),
+    _: User = Depends(require_roles("admin")),
 ) -> SessionResponse:
     return await use_case.execute(data)
 
@@ -105,7 +127,7 @@ async def update_session(
     session_id: int,
     data: UpdateSessionRequest,
     use_case: FromDishka[UpdateSessionUseCase] = ...,
-    _: User = Depends(require_roles("admin", "moderator")),
+    _: User = Depends(require_roles("admin")),
 ) -> SessionResponse:
     return await use_case.execute(session_id, data)
 
@@ -115,6 +137,6 @@ async def update_session(
 async def cancel_session(
     session_id: int,
     use_case: FromDishka[CancelSessionUseCase] = ...,
-    _: User = Depends(require_roles("admin", "moderator")),
+    _: User = Depends(require_roles("admin")),
 ) -> None:
     await use_case.execute(session_id)
