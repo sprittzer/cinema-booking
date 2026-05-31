@@ -83,11 +83,11 @@ a { color: inherit; text-decoration: none; }
 .logo-mark { width: 40px; height: 40px; border-radius: 10px; background: var(--gold); color: #080810; display: grid; place-items: center; }
 .logo-text { font-family: 'Space Grotesk', sans-serif; letter-spacing: 1pt; font-size: 24px; font-weight: 800; }
 
-.login-page { min-height: 100vh; display: grid; grid-template-columns: 1.35fr 1fr; background: #05050b; }
+.login-page { min-height: 100vh; display: grid; grid-template-columns: 1.35fr 1fr; background: var(--bg); }
 .login-quote { position: relative; display: flex; flex-direction: column; justify-content: flex-end; padding: 0 0 90px 52px; background: linear-gradient(90deg, rgba(5,5,10,.1), rgba(5,5,10,.5)), url('https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?q=80&w=1800') center/cover; }
 .login-quote::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(8,8,16,.78) 0%, rgba(8,8,16,.55) 34%, rgba(8,8,16,.22) 70%, rgba(8,8,16,.6) 100%), linear-gradient(180deg, rgba(8,8,16,0) 70%, rgba(255, 250, 239, 0.295) 100%); }
 .login-quote h1, .login-quote p { position: relative; z-index: 1; max-width: 520px; }
-.login-quote h1 { font-family: 'Space Grotesk', sans-serif; font-size: 58px; line-height: 1.22; margin: 0 0 24px; }
+.login-quote h1 { font-family: 'Space Grotesk', sans-serif; font-size: 58px; line-height: 1.22; margin: 0 0 24px; color:#f4f0ea }
 .login-quote p { color: var(--muted); font-size: 18px; }
 .login-panel { display: flex; flex-direction: column; justify-content: center; padding: 60px; }
 .login-card { width: 100%; max-width: 470px; margin-top: 60px; }
