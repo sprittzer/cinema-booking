@@ -16,6 +16,7 @@ TMDB_GENRE_MAP = {
     99: "documentary",
 }
 
+
 # TMDB v3 base, всегда с /3 в конце, без лишних слэшей
 def _base() -> str:
     raw = config.tmdb_base_url.rstrip("/")
@@ -77,11 +78,7 @@ async def fetch_images(tmdb_id: int) -> list[str]:
         response = await client.get(f"{_base()}/movie/{tmdb_id}/images")
         response.raise_for_status()
         backdrops = response.json().get("backdrops", [])
-        return [
-            f"https://image.tmdb.org/t/p/w1280{b['file_path']}"
-            for b in backdrops[:10]
-            if b.get("file_path")
-        ]
+        return [f"https://image.tmdb.org/t/p/w1280{b['file_path']}" for b in backdrops[:10] if b.get("file_path")]
 
 
 _US_CERT_MAP = {"G": "0+", "PG": "6+", "PG-13": "12+", "R": "16+", "NC-17": "18+"}
@@ -99,12 +96,12 @@ async def fetch_age_rating(tmdb_id: int) -> str | None:
         for rd in by_country.get(country, []):
             cert = rd.get("certification", "").strip()
             if cert:
-                return _US_CERT_MAP.get(cert, cert) if country == "US" else cert
+                return str(_US_CERT_MAP.get(cert, cert)) if country == "US" else str(cert)
 
     return None
 
 
-async def fetch_person(person_id: int) -> dict:
+async def fetch_person(person_id: int) -> dict[str, Any]:
     async with _client() as client:
         response = await client.get(f"{_base()}/person/{person_id}", params={"language": "ru-RU"})
         if response.status_code != 200:
@@ -112,7 +109,7 @@ async def fetch_person(person_id: int) -> dict:
         return response.json()  # type: ignore[no-any-return]
 
 
-async def fetch_credits(tmdb_id: int) -> list[dict]:
+async def fetch_credits(tmdb_id: int) -> list[dict[str, Any]]:
     async with _client() as client:
         response = await client.get(f"{_base()}/movie/{tmdb_id}/credits", params={"language": "ru-RU"})
         response.raise_for_status()

@@ -7,7 +7,8 @@ from fastapi.responses import JSONResponse
 
 from .booking.api import router as booking_router
 from .booking.providers import BookingProvider
-from .catalog.api import actors_router, router as catalog_router
+from .catalog.api import actors_router
+from .catalog.api import router as catalog_router
 from .catalog.providers import CatalogProvider
 from .common.config import config
 from .common.providers import ConfigProvider, DatabaseProvider
@@ -30,6 +31,7 @@ app.add_middleware(
 @app.exception_handler(Exception)
 async def unhandled_exception_handler(_: Request, exc: Exception) -> JSONResponse:
     return JSONResponse(status_code=500, content={"detail": str(exc)})
+
 
 app.include_router(identity_router)
 app.include_router(catalog_router)

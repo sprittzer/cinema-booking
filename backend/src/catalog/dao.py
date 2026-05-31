@@ -2,8 +2,8 @@ from sqlalchemy import case, func, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.common.base_dao import BaseDAO
-
 from src.identity.models import User
+
 from .models import Actor, Movie, MovieReview, MovieStatus, ReviewLike, movie_actors
 
 
@@ -68,7 +68,7 @@ class MovieReviewDAO(BaseDAO):
             .where(MovieReview.movie_id == movie_id)
             .order_by(MovieReview.id)
         )
-        return list(result.all())
+        return list(result.tuples().all())
 
     async def get_by_id(self, review_id: int) -> MovieReview | None:
         result = await self._session.execute(select(MovieReview).where(MovieReview.id == review_id))
@@ -182,7 +182,7 @@ class ActorDAO(BaseDAO):
             .where(movie_actors.c.movie_id == movie_id)
             .order_by(Actor.name)
         )
-        return list(result.all())
+        return list(result.tuples().all())
 
     async def add_to_movie(self, movie_id: int, actor_id: int, character: str | None) -> None:
         await self._session.execute(

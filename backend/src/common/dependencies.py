@@ -9,6 +9,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.identity.models import User
+
 from .security import decode_token
 
 security = HTTPBearer()

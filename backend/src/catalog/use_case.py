@@ -1,11 +1,14 @@
 import asyncio
+import contextlib
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from src.booking.models import Booking, BookingStatus
 from src.common.base_use_case import BaseUseCase
 from src.common.exceptions import AlreadyExistsError, ForbiddenError, NotFoundError
 from src.identity.models import User
+from src.scheduling.models import CinemaSession
 
 from .dao import ActorDAO, MovieDAO, MovieReviewDAO, ReviewLikeDAO
 from .models import Actor, Movie, MovieReview, MovieStatus, ReviewLike
@@ -18,12 +21,19 @@ from .scheme import (
     ImportTMDBRequest,
     MovieActorResponse,
     MovieResponse,
-    ReactRequest,
     ReviewResponse,
     UpdateActorRequest,
     UpdateMovieRequest,
 )
-from .tmdb_service import fetch_age_rating, fetch_credits, fetch_images, fetch_movie, fetch_person, fetch_trailer_url, map_genre
+from .tmdb_service import (
+    fetch_age_rating,
+    fetch_credits,
+    fetch_images,
+    fetch_movie,
+    fetch_person,
+    fetch_trailer_url,
+    map_genre,
+)
 
 
 class GetMoviesUseCase(BaseUseCase):
@@ -130,7 +140,7 @@ class ImportTMDBUseCase(BaseUseCase):
             return_exceptions=True,
         )
 
-        for cast_member, person in zip(credits, person_details):
+        for cast_member, person in zip(credits, person_details, strict=False):
             bio = person.get("biography") if isinstance(person, dict) else None
             birth_year_raw = person.get("birthday") if isinstance(person, dict) else None
             birth_year = int(birth_year_raw[:4]) if birth_year_raw and len(birth_year_raw) >= 4 else None
@@ -145,10 +155,8 @@ class ImportTMDBUseCase(BaseUseCase):
                     birth_year=birth_year,
                 )
                 actor = await self._actor_dao.create(actor)
-            try:
+            with contextlib.suppress(Exception):
                 await self._actor_dao.add_to_movie(movie.id, actor.id, cast_member["character"])
-            except Exception:
-                pass
 
         return MovieResponse.model_validate(movie)
 
@@ -200,6 +208,16 @@ class CreateReviewUseCase(BaseUseCase):
 
         if await self._review_dao.get_by_user_and_movie(user.id, movie_id):
             raise AlreadyExistsError("Отзыв уже оставлен")
+
+        result = await self._session.execute(
+            select(Booking).where(
+                Booking.user_id == user.id,
+                Booking.status.in_([BookingStatus.CONFIRMED, BookingStatus.USED]),
+                Booking.session_id.in_(select(CinemaSession.id).where(CinemaSession.movie_id == movie_id)),
+            )
+        )
+        if not result.scalar_one_or_none():
+            raise ForbiddenError("Для написания отзыва необходимо иметь билет на этот фильм")
 
         review = MovieReview(user_id=user.id, movie_id=movie_id, score=data.score, text=data.text)
         review = await self._review_dao.create(review)
@@ -322,8 +340,8 @@ class AddMovieActorUseCase(BaseUseCase):
             raise NotFoundError("Актёр не найден")
         try:
             await self._actor_dao.add_to_movie(movie_id, data.actor_id, data.character)
-        except Exception:
-            raise AlreadyExistsError("Актёр уже добавлен к фильму")
+        except Exception as err:
+            raise AlreadyExistsError("Актёр уже добавлен к фильму") from err
         return MovieActorResponse(
             id=actor.id,
             name=actor.name,
